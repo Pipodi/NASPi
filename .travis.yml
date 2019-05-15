@@ -25,7 +25,7 @@ install:
   - mvn install -DskipTests=true -B -V
   # Build docker image
   - docker build -t pipodi/naspi --build-arg JAR_FILE=target/nas-controller-0.0.1-SNAPSHOT.jar .
-  - docker run -d --name=wordofthedaytelegrambot pipodi/naspi
+  - docker run -d --name=naspi pipodi/naspi
   - docker ps -a
   - docker stats --no-stream
   - echo "$DOCKER_PASSWORD" | docker login -u=pipodi --password-stdin;
