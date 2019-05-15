@@ -1,4 +1,4 @@
-FROM arm64v8/jdk:11
+FROM arm64v8/openjdk:11
 VOLUME /tmp
 ARG JAR_FILE
 COPY ${JAR_FILE} app.jar
