@@ -30,3 +30,6 @@ install:
   - docker stats --no-stream
   - echo "$DOCKER_PASSWORD" | docker login -u=pipodi --password-stdin;
   - docker push pipodi/naspi
+
+script
+  - echo "Skipping tests"
