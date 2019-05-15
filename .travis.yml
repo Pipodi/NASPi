@@ -7,11 +7,15 @@ jdk:
 
 services:
   - docker
+  
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2
 
 branches:
   only:
     - master
-    - develop
 
 before_install:
   # Add docker keys
