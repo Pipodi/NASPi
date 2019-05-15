@@ -1,0 +1,32 @@
+sudo: required
+
+language: java
+
+jdk:
+  - oraclejdk11
+
+services:
+  - docker
+
+branches:
+  only:
+    - master
+    - develop
+
+before_install:
+  # Add docker keys
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+install:
+  # Install last docker
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - mvn install 
+  # Build docker image
+  - docker build -t pipodi/naspi --build-arg JAR_FILE=target/nas-controller-0.0.1-SNAPSHOT.jar .
+  - docker run -d --name=wordofthedaytelegrambot pipodi/naspi
+  - docker ps -a
+  - docker stats --no-stream
+  - echo "$DOCKER_PASSWORD" | docker login -u=pipodi --password-stdin;
+  - docker push pipodi/naspi
