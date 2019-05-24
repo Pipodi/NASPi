@@ -9,8 +9,8 @@
         <module name="Workspace" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Workspace" target="12" />
+    <bytecodeTargetLevel target="8">
+      <module name="Workspace" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

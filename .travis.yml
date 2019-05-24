@@ -16,24 +16,41 @@ cache:
 branches:
   only:
     - master
+    - development
 
 before_install:
   # Add docker keys
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - wget https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0/qemu-arm-static
+  - chmod +x qemu-arm-static
 
 install:
   # Install last docker
   - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce qemu-user-static
   - mvn install -DskipTests=true -B -V
   # Build docker image
-  - docker build -t pipodi/naspi --build-arg JAR_FILE=target/nas-controller-0.0.1-SNAPSHOT.jar .
+  - docker build -t pipodi/naspi --build-arg JAR_FILE=target/NASPi.jar .
   - docker run -d --name=naspi pipodi/naspi
   - docker ps -a
   - docker stats --no-stream
-  - echo "$DOCKER_PASSWORD" | docker login -u=pipodi --password-stdin;
-  - docker push pipodi/naspi
-
 script:
   - echo "Skipping tests"
+  
+after_success:
+  - echo SUCCESS
+
+before_deploy:
+  - echo "$DOCKER_PASSWORD" | docker login -u=pipodi --password-stdin;
+
+deploy:
+  - provider: script
+    script: bash scripts/development-deploy.sh
+    on:
+      branch: development
+
+  - provider: script
+    script: bash scripts/master-deploy.sh
+    on:
+      branch: master

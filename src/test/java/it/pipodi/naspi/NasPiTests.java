@@ -1,4 +1,4 @@
-package it.pipodi.nascontroller;
+package it.pipodi.naspi;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class NasControllerApplicationTests {
+public class NasPiTests {
 
     @Test
     public void contextLoads() {

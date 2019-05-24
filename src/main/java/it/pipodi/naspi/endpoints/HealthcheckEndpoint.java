@@ -1,6 +1,6 @@
-package it.pipodi.nascontroller.endpoints;
+package it.pipodi.naspi.endpoints;
 
-import it.pipodi.nascontroller.orchestration.HealthcheckOrchestration;
+import it.pipodi.naspi.orchestration.HealthcheckOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +15,13 @@ public class HealthcheckEndpoint {
     @Autowired
     private HealthcheckOrchestration orchestration;
 
+    /**
+     * Healthcheck endpoint
+     *
+     * @return healthcheck string
+     */
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String>healthcheck(){
+    public ResponseEntity<String> healthcheck() {
         return ResponseEntity.ok().body(this.orchestration.generateHealthcheck());
     }
 }
