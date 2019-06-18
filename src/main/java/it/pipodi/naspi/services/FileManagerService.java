@@ -34,7 +34,7 @@ public class FileManagerService {
 	 * @return the file as Resource
 	 */
 	public Resource loadFileAsResource(String fileName, String subFolder) {
-		logger.info("loadFileAsResource() method called");
+		logger.debug("loadFileAsResource() method called");
 		try {
 			Path filePath =
 					Path.of(String.format("%s/%s/%s", config.getRootFolder(), subFolder, fileName)).normalize();
@@ -56,6 +56,7 @@ public class FileManagerService {
 	 * @return the extension
 	 */
 	public static String parseExtension(String fileName) {
+		logger.debug("parseExtension() method called");
 		return fileName.substring(fileName.lastIndexOf("."));
 	}
 
@@ -66,7 +67,7 @@ public class FileManagerService {
 	 * @param subfolder subfolder where the file will be stored
 	 */
 	public void uploadFile(MultipartFile file, String subfolder) {
-		logger.info("uploadFile() method called");
+		logger.debug("uploadFile() method called");
 		try {
 			Path targetLocation = Path.of(String.format("%s/%s", config.getRootFolder(), subfolder))
 					.resolve(file.getOriginalFilename());
@@ -84,7 +85,7 @@ public class FileManagerService {
 	 * @param file torrent file to be started
 	 */
 	public void uploadTorrent(MultipartFile file) {
-		logger.info("uploadTorrent() method called");
+		logger.debug("uploadTorrent() method called");
 		try {
 			Path targetLocation = Path.of(String.format("%s/%s", config.getRootFolder(),
 					config.getTorrentFileFolder())).resolve(file.getOriginalFilename());
