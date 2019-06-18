@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class TorrentDownloadResponse {
 
-    private String path;
+	private String initialPath;
+
+	private String finalPath;
 
 }
