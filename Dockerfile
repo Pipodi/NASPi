@@ -1,7 +1,7 @@
 FROM arm32v7/openjdk:11.0.3-jre-stretch
 COPY ./qemu-arm-static /usr/bin/qemu-arm-static
-RUN apt-get update && apt-get install transmission-daemon -y && apt-get install transmission-cli -y
-COPY settings.json /etc/transmission-daemon/settings.json
+RUN apt-get update && apt-get install transmission-cli -y
+COPY scripts/done.sh /done.sh
 ARG JAR_FILE
 ARG PATH_BASE
 ARG PATH_DB
