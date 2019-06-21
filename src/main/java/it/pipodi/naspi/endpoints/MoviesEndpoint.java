@@ -96,6 +96,7 @@ public class MoviesEndpoint {
 	@RequestMapping(value = "/stream/{filename}", method = RequestMethod.GET)
 	public void stream(HttpServletRequest request,
 	                   HttpServletResponse response, @PathVariable String filename) {
+		logger.debug("Starting streaming for file: {}", filename);
 		String filepath = String.format("%s/Movies/%s", config.getRootFolder(), filename);
 		Path path = Paths.get(filepath);
 		try {
