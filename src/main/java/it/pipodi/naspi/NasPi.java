@@ -14,6 +14,4 @@ public class NasPi {
 	public static void main(String[] args) {
 		SpringApplication.run(NasPi.class, args);
 	}
-
-
 }
