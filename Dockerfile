@@ -6,4 +6,4 @@ ARG JAR_FILE
 ARG PATH_BASE
 ARG PATH_DB
 COPY ${JAR_FILE} app.jar
-CMD java -Dpath.base=${PATH_BASE} -Dpath.db=${PATH_DB} -jar app.jar
+CMD java -Dpath.base=${PATH_BASE} -Dpath.db=${PATH_DB} -Dspring.content.fs.filesystem-root=${PATH_BASE} -jar app.jar

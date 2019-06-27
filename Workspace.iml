@@ -74,6 +74,22 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-core:5.1.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.1.6.RELEASE" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.yaml:snakeyaml:1.23" level="project" />
+    <orderEntry type="library" name="Maven: com.github.paulcwarren:spring-content-fs-boot-starter:0.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.paulcwarren:spring-content-fs:0.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.1.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.github.paulcwarren:spring-content-commons:0.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.paulcwarren:spring-content-autoconfigure:0.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.paulcwarren:spring-content-rest-boot-starter:0.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.paulcwarren:spring-content-rest:0.9.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:4.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-rest-core:3.1.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.hateoas:spring-hateoas:0.25.1.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:2.1.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.atteo:evo-inflector:1.2.1" level="project" />
+    <orderEntry type="library" name="Maven: com.github.paulcwarren:spring-versions-commons:0.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:5.1.5.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework.boot:spring-boot-starter-test:2.1.4.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework.boot:spring-boot-test:2.1.4.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework.boot:spring-boot-test-autoconfigure:2.1.4.RELEASE" level="project" />
