@@ -86,7 +86,7 @@ public class TorrentOrchestration {
 			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}*/
 		String torrentPath = this.fileManagerService.uploadTorrent(file);
-		String cmd = String.format("transmission-cli -w %s %s", finalFolder.toString(), torrentPath);
+		String cmd = String.format("transmission-remote -a %s -w %s", torrentPath, finalFolder.toString());
 		LinuxBashUtils.executeBashCommand(cmd);
 		return torrentDownloadResponse;
 	}
