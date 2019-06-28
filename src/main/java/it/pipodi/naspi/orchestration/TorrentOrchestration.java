@@ -69,6 +69,7 @@ public class TorrentOrchestration {
 				insertQuery = "INSERT INTO movies(title, final_folder, initial_folder) VALUES (?, ?, ?)";
 				break;
 			default:
+				logger.error("Wrong type in the request: {}", infos.getType();
 				throw new NASPiRuntimeException("Wrong type in the request", HttpStatus.BAD_REQUEST);
 		}
 		finalFolder.append(infos.getTitle());
@@ -81,6 +82,7 @@ public class TorrentOrchestration {
 			statement.setString(3, initialFolder);
 			statement.executeUpdate();
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		this.fileManagerService.uploadTorrent(file);
@@ -197,7 +199,7 @@ public class TorrentOrchestration {
 			if (!resultSet.next()) {
 				logger.debug("{} is not a movie, querying series table", fileName);
 				statement = db.prepareStatement(selectQuerySeries);
-				statement.setString(1, fileName);
+				statement.setString(1, "%" + fileName + "%");
 				ResultSet resultSetSeries = statement.executeQuery();
 				if (!resultSetSeries.next()) {
 					throw new NASPiRuntimeException(String.format("%s is neither a series nor a movie", fileName), HttpStatus.NOT_FOUND);
@@ -210,6 +212,7 @@ public class TorrentOrchestration {
 				moveFolder(fileName, resultSet);
 			}
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
@@ -222,8 +225,10 @@ public class TorrentOrchestration {
 			String initial_folder = String.format("%s/%s/%s", config.getRootFolder(), config.getTorrentDownloadsFolder(), fileName);
 			Files.move(Paths.get(initial_folder), Paths.get(final_folder), StandardCopyOption.REPLACE_EXISTING);
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (IOException e) {
+			logger.error(e.getMessage());
 			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
