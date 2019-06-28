@@ -69,7 +69,7 @@ public class TorrentOrchestration {
 				insertQuery = "INSERT INTO movies(title, final_folder, initial_folder) VALUES (?, ?, ?)";
 				break;
 			default:
-				logger.error("Wrong type in the request: {}", infos.getType();
+				logger.error("Wrong type in the request: {}", infos.getType());
 				throw new NASPiRuntimeException("Wrong type in the request", HttpStatus.BAD_REQUEST);
 		}
 		finalFolder.append(infos.getTitle());
