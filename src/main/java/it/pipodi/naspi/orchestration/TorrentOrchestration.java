@@ -205,7 +205,7 @@ public class TorrentOrchestration {
 					throw new NASPiRuntimeException(String.format("%s is neither a series nor a movie", fileName), HttpStatus.NOT_FOUND);
 				} else {
 					logger.debug("{} is a series. Moving to series directory.", fileName);
-					moveFolder(fileName, resultSet);
+					moveFolder(fileName, resultSetSeries);
 				}
 			} else {
 				logger.debug("{} is a movie. Moving to movies directory.", fileName);
