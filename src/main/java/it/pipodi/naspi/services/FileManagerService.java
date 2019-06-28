@@ -84,12 +84,13 @@ public class FileManagerService {
 	 *
 	 * @param file torrent file to be started
 	 */
-	public void uploadTorrent(MultipartFile file) {
+	public String uploadTorrent(MultipartFile file) {
 		logger.debug("uploadTorrent() method called");
 		try {
 			Path targetLocation = Path.of(String.format("%s/%s", config.getRootFolder(),
 					config.getTorrentFileFolder())).resolve(file.getOriginalFilename());
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+			return targetLocation.toString();
 		} catch (IOException e) {
 			logger.error("Exception in uploadTorrent() method: {}", e.getMessage());
 			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

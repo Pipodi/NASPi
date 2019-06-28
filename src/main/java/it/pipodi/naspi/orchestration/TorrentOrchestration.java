@@ -75,7 +75,7 @@ public class TorrentOrchestration {
 		finalFolder.append(infos.getTitle());
 
 		torrentDownloadResponse.setFinalPath(finalFolder.toString());
-		try {
+		/*try {
 			PreparedStatement statement = db.prepareStatement(insertQuery);
 			statement.setString(1, infos.getTitle());
 			statement.setString(2, finalFolder.toString());
@@ -84,8 +84,10 @@ public class TorrentOrchestration {
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
 			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		this.fileManagerService.uploadTorrent(file);
+		}*/
+		String torrentPath = this.fileManagerService.uploadTorrent(file);
+		String cmd = String.format("transmission-cli -w %s %s", finalFolder.toString(), torrentPath);
+		LinuxBashUtils.executeBashCommand(cmd);
 		return torrentDownloadResponse;
 	}
 

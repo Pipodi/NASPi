@@ -1,6 +1,8 @@
 package it.pipodi.naspi.utils;
 
 import it.pipodi.naspi.exceptions.NASPiRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import java.io.BufferedReader;
@@ -9,34 +11,37 @@ import java.io.InputStreamReader;
 
 public class LinuxBashUtils {
 
-    public static String executeBashCommand(String bashCommand) {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("bash", "-c", bashCommand);
+	private static final Logger logger = LoggerFactory.getLogger(LinuxBashUtils.class);
 
-        try {
-            Process process = processBuilder.start();
-            StringBuilder output = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }
+	public static String executeBashCommand(String bashCommand) {
+		logger.debug("Executing bash command: {}", bashCommand);
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		processBuilder.command("bash", "-c", bashCommand);
 
-            int exitCode = process.waitFor();
+		try {
+			Process process = processBuilder.start();
+			StringBuilder output = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				output.append(line + "\n");
+			}
 
-            if (exitCode == 0) {
-                return output.toString();
-            } else {
-                throw new NASPiRuntimeException(String.format("Process execution exited with code: %d", exitCode),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+			int exitCode = process.waitFor();
 
-        } catch (IOException e) {
-            throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+			if (exitCode == 0) {
+				return output.toString();
+			} else {
+				throw new NASPiRuntimeException(String.format("Process execution exited with code: %d", exitCode),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 
-        return null;
-    }
+		} catch (IOException e) {
+			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }
