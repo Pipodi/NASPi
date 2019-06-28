@@ -72,7 +72,7 @@ public class TorrentOrchestration {
 				logger.error("Wrong type in the request: {}", infos.getType());
 				throw new NASPiRuntimeException("Wrong type in the request", HttpStatus.BAD_REQUEST);
 		}
-		finalFolder.append(infos.getTitle());
+		//finalFolder.append(infos.getTitle());
 
 		torrentDownloadResponse.setFinalPath(finalFolder.toString());
 		/*try {
