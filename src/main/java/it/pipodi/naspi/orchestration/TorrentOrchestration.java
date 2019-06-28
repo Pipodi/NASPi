@@ -52,7 +52,6 @@ public class TorrentOrchestration {
 	public TorrentDownloadResponse startTorrentDownload(MultipartFile file, TorrentRequest infos) {
 		logger.debug("startTorrentDownload() method called");
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-		this.fileManagerService.uploadTorrent(file);
 		String initialFolder = String.format("%s/%s/%s", config.getRootFolder(),
 				config.getTorrentDownloadsFolder(), fileName);
 		TorrentDownloadResponse torrentDownloadResponse = new TorrentDownloadResponse();
@@ -84,6 +83,7 @@ public class TorrentOrchestration {
 		} catch (SQLException e) {
 			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		this.fileManagerService.uploadTorrent(file);
 		return torrentDownloadResponse;
 	}
 
@@ -186,13 +186,13 @@ public class TorrentOrchestration {
 		logger.debug("moveTorrent() method called");
 		logger.debug("Moving {}", fileName);
 
-		String selectQueryMovies = "SELECT final_folder FROM movies WHERE initial_folder = %?%";
+		String selectQueryMovies = "SELECT final_folder FROM movies WHERE initial_folder LIKE ?";
 
-		String selectQuerySeries = "SELECT final_folder FROM series WHERE initial_folder = %?%";
+		String selectQuerySeries = "SELECT final_folder FROM series WHERE initial_folder LIKE ?";
 
 		try {
 			PreparedStatement statement = db.prepareStatement(selectQueryMovies);
-			statement.setString(1, fileName);
+			statement.setString(1, "%" + fileName + "%");
 			ResultSet resultSet = statement.executeQuery();
 			if (!resultSet.next()) {
 				logger.debug("{} is not a movie, querying series table", fileName);
