@@ -65,17 +65,4 @@ public class TorrentEndpoint {
 		return ResponseEntity.ok(this.torrentOrchestration.getAllTorrents());
 	}
 
-
-	/**
-	 * GET endpoint called by script to move the torrent after download
-	 *
-	 * @param fileName directory of the torrent
-	 * @return 200 OK
-	 */
-	@RequestMapping(value = "/move/{fileName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> moveTorrent(@PathVariable String fileName) {
-		logger.debug("moveTorrent() method called");
-		this.torrentOrchestration.moveTorrent(fileName);
-		return ResponseEntity.ok().build();
-	}
 }

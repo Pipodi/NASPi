@@ -16,14 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -40,8 +32,6 @@ public class TorrentOrchestration {
 	@Autowired
 	private NasPiConfig config;
 
-	@Autowired
-	private Connection db;
 
 	/**
 	 * Stores the file in the watch folder of transmission
@@ -52,42 +42,26 @@ public class TorrentOrchestration {
 	public TorrentDownloadResponse startTorrentDownload(MultipartFile file, TorrentRequest infos) {
 		logger.debug("startTorrentDownload() method called");
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-		String initialFolder = String.format("%s/%s/%s", config.getRootFolder(),
-				config.getTorrentDownloadsFolder(), fileName);
 		TorrentDownloadResponse torrentDownloadResponse = new TorrentDownloadResponse();
-		torrentDownloadResponse.setInitialPath(initialFolder);
 		StringBuilder finalFolder = new StringBuilder();
 		finalFolder.append(config.getRootFolder());
-		String insertQuery;
 		switch (infos.getType()) {
 			case SERIES:
 				finalFolder.append("/TVSeries/");
-				insertQuery = "INSERT INTO series(title, final_folder, initial_folder) VALUES (?, ?, ?)";
 				break;
 			case MOVIE:
 				finalFolder.append("/Movies/");
-				insertQuery = "INSERT INTO movies(title, final_folder, initial_folder) VALUES (?, ?, ?)";
 				break;
 			default:
 				logger.error("Wrong type in the request: {}", infos.getType());
 				throw new NASPiRuntimeException("Wrong type in the request", HttpStatus.BAD_REQUEST);
 		}
-		//finalFolder.append(infos.getTitle());
 
-		torrentDownloadResponse.setFinalPath(finalFolder.toString());
-		/*try {
-			PreparedStatement statement = db.prepareStatement(insertQuery);
-			statement.setString(1, infos.getTitle());
-			statement.setString(2, finalFolder.toString());
-			statement.setString(3, initialFolder);
-			statement.executeUpdate();
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}*/
 		String torrentPath = this.fileManagerService.uploadTorrent(file);
 		String cmd = String.format("transmission-remote -a %s -w %s", torrentPath, finalFolder.toString());
 		LinuxBashUtils.executeBashCommand(cmd);
+		finalFolder.append(fileName);
+		torrentDownloadResponse.setFinalPath(finalFolder.toString());
 		return torrentDownloadResponse;
 	}
 
@@ -178,61 +152,5 @@ public class TorrentOrchestration {
 		torrents.setTorrents(torrentList);
 
 		return torrents;
-	}
-
-	/**
-	 * Moves the file into the proper folder
-	 *
-	 * @param fileName name of the directory
-	 */
-
-	public void moveTorrent(String fileName) {
-		logger.debug("moveTorrent() method called");
-		logger.debug("Moving {}", fileName);
-
-		String selectQueryMovies = "SELECT final_folder FROM movies WHERE initial_folder LIKE ?";
-
-		String selectQuerySeries = "SELECT final_folder FROM series WHERE initial_folder LIKE ?";
-
-		try {
-			PreparedStatement statement = db.prepareStatement(selectQueryMovies);
-			statement.setString(1, "%" + fileName + "%");
-			ResultSet resultSet = statement.executeQuery();
-			if (!resultSet.next()) {
-				logger.debug("{} is not a movie, querying series table", fileName);
-				statement = db.prepareStatement(selectQuerySeries);
-				statement.setString(1, "%" + fileName + "%");
-				ResultSet resultSetSeries = statement.executeQuery();
-				if (!resultSetSeries.next()) {
-					throw new NASPiRuntimeException(String.format("%s is neither a series nor a movie", fileName), HttpStatus.NOT_FOUND);
-				} else {
-					logger.debug("{} is a series. Moving to series directory.", fileName);
-					moveFolder(fileName, resultSetSeries);
-				}
-			} else {
-				logger.debug("{} is a movie. Moving to movies directory.", fileName);
-				moveFolder(fileName, resultSet);
-			}
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
-
-	private void moveFolder(String fileName, ResultSet resultSet) {
-		String final_folder = null;
-		try {
-			final_folder = resultSet.getString("final_folder");
-			String initial_folder = String.format("%s/%s/%s", config.getRootFolder(), config.getTorrentDownloadsFolder(), fileName);
-			Files.move(Paths.get(initial_folder), Paths.get(final_folder), StandardCopyOption.REPLACE_EXISTING);
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
 	}
 }
