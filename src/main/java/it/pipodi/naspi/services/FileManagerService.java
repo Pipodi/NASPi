@@ -20,79 +20,81 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileManagerService {
 
-    @Autowired
-    private NasPiConfig config;
+	@Autowired
+	private NasPiConfig config;
 
-    private static final Logger logger = LoggerFactory.getLogger(FileManagerService.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileManagerService.class);
 
 
-    /**
-     * Reads a file from the filesystem and sends it back to the user
-     *
-     * @param fileName  the name of the file, including the extension
-     * @param subFolder the subfolder containing the file
-     * @return the file as Resource
-     */
-    public Resource loadFileAsResource(String fileName, String subFolder) {
-        logger.info("loadFileAsResource() method called");
-        try {
-            Path filePath =
-                    Path.of(String.format("%s/%s/%s", config.getRootFolder(), subFolder, fileName)).normalize();
-            Resource fileResource = new UrlResource(filePath.toUri());
-            if (fileResource.exists()) {
-                return fileResource;
-            }
-        } catch (MalformedURLException e) {
-            logger.error("Exception in loadFileAsResource() method: {}", e.getMessage());
-            throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        throw new NASPiRuntimeException(String.format("%s was not found.", fileName), HttpStatus.NOT_FOUND);
-    }
+	/**
+	 * Reads a file from the filesystem and sends it back to the user
+	 *
+	 * @param fileName  the name of the file, including the extension
+	 * @param subFolder the subfolder containing the file
+	 * @return the file as Resource
+	 */
+	public Resource loadFileAsResource(String fileName, String subFolder) {
+		logger.debug("loadFileAsResource() method called");
+		try {
+			Path filePath =
+					Path.of(String.format("%s/%s/%s", config.getRootFolder(), subFolder, fileName)).normalize();
+			Resource fileResource = new UrlResource(filePath.toUri());
+			if (fileResource.exists()) {
+				return fileResource;
+			}
+		} catch (MalformedURLException e) {
+			logger.error("Exception in loadFileAsResource() method: {}", e.getMessage());
+			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		throw new NASPiRuntimeException(String.format("%s was not found.", fileName), HttpStatus.NOT_FOUND);
+	}
 
-    /**
-     * Parses the extension of a given file name
-     *
-     * @param fileName name of the file, including the extension
-     * @return the extension
-     */
-    public static String parseExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf("."));
-    }
+	/**
+	 * Parses the extension of a given file name
+	 *
+	 * @param fileName name of the file, including the extension
+	 * @return the extension
+	 */
+	public static String parseExtension(String fileName) {
+		logger.debug("parseExtension() method called");
+		return fileName.substring(fileName.lastIndexOf("."));
+	}
 
-    /**
-     * Stores a file on the filesystem
-     *
-     * @param file      file to be stored
-     * @param subfolder subfolder where the file will be stored
-     */
-    public void uploadFile(MultipartFile file, String subfolder) {
-        logger.info("uploadFile() method called");
-        try {
-            Path targetLocation = Path.of(String.format("%s/%s", config.getRootFolder(), subfolder))
-                    .resolve(file.getOriginalFilename());
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            logger.error("Exception in uploadFile() method: {}", e.getMessage());
-            throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+	/**
+	 * Stores a file on the filesystem
+	 *
+	 * @param file      file to be stored
+	 * @param subfolder subfolder where the file will be stored
+	 */
+	public void uploadFile(MultipartFile file, String subfolder) {
+		logger.debug("uploadFile() method called");
+		try {
+			Path targetLocation = Path.of(String.format("%s/%s", config.getRootFolder(), subfolder))
+					.resolve(file.getOriginalFilename());
+			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			logger.error("Exception in uploadFile() method: {}", e.getMessage());
+			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
-    }
+	}
 
-    /**
-     * Stores a torrent file in the watch folder of transmission
-     *
-     * @param file torrent file to be started
-     */
-    public void uploadTorrent(MultipartFile file) {
-        logger.info("uploadTorrent() method called");
-        try {
-            Path targetLocation = Path.of(String.format("%s/%s", config.getRootFolder(),
-                    config.getTorrentFileFolder())).resolve(file.getOriginalFilename());
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            logger.info("Exception in uploadTorrent() method: {}", e.getMessage());
-            throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+	/**
+	 * Stores a torrent file in the watch folder of transmission
+	 *
+	 * @param file torrent file to be started
+	 */
+	public String uploadTorrent(MultipartFile file) {
+		logger.debug("uploadTorrent() method called");
+		try {
+			Path targetLocation = Path.of(String.format("%s/%s", config.getRootFolder(),
+					config.getTorrentFileFolder())).resolve(file.getOriginalFilename());
+			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+			return targetLocation.toString();
+		} catch (IOException e) {
+			logger.error("Exception in uploadTorrent() method: {}", e.getMessage());
+			throw new NASPiRuntimeException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }
