@@ -47,7 +47,7 @@ public class TorrentOrchestration {
 		finalFolder.append(config.getRootFolder());
 		switch (infos.getType()) {
 			case SERIES:
-				finalFolder.append("/TVSeries/");
+				finalFolder.append("/Series/");
 				break;
 			case MOVIE:
 				finalFolder.append("/Movies/");
